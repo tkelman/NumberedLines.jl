@@ -1,5 +1,12 @@
 using NumberedLines
-using Base.Test
+import Documenter
 
-# write your own tests here
-@test 1 == 2
+Documenter.makedocs(
+  modules = NumberedLines,
+  root = joinpath(dirname(dirname(@__FILE__)), "docs"),
+  format = :html,
+  sitename = "NumberedLines",
+  pages = ["index.md"],
+  authors = "Brandon Taylor",
+  strict = true
+)
