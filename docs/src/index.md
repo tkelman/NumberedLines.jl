@@ -6,4 +6,5 @@ can be directly attached to the corresponding line. Attach and detach with
 [`attach_line_numbers`](@ref) and [`detach_line_numbers`](@ref).
 
 ```@autodocs
+Modules = [NumberedLines]
 ```
