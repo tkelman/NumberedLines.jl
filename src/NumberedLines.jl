@@ -53,7 +53,7 @@ safe_get(vector, index) =
 macro get_and_iterate(vector, index)
     quote
         $index += 1
-        $safe_get(vector, index - 1)
+        $safe_get($vector, $index - 1)
     end |> esc
 end
 
