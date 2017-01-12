@@ -63,6 +63,8 @@ end
 Attach line numbers to lines
 
 ```jldoctest
+julia> using NumberedLines
+
 julia> e = quote
            1
            begin
@@ -111,6 +113,8 @@ separate(n::NumberedLine) = [n.number, n.line]
 Detach line numbers from lines
 
 ```jldoctest
+julia> using NumberedLines
+
 julia> e = quote
            1
        end;
@@ -131,6 +135,8 @@ Base.string(n::NumberedLine) = string(detach_line_numbers(n) )
 Return a copy of `n` with `f` applied to the line in `n`
 
 ```jldoctest
+julia> using NumberedLines
+
 julia> add_one(a) = :(\$a + 1);
 
 julia> e = quote
@@ -154,6 +160,8 @@ without_line_number(f, n::NumberedLine) = NumberedLine(n.number, f(n.line))
 [`detach_line_numbers`](@ref)
 
 ```jldoctest
+julia> using NumberedLines
+
 julia> reverse_lines(e) = Expr(e.head, e.args[2], e.args[1]);
 
 julia> e = quote
