@@ -73,13 +73,13 @@ julia> e = quote
        end;
 
 julia> typeof( attach_line_numbers(e).args[1] )
-NumberedLine
+NumberedLines.NumberedLine
 
 julia> typeof( attach_line_numbers(e).args[2] )
-NumberedLine
+NumberedLines.NumberedLine
 
 julia> typeof( attach_line_numbers(e).args[2].line.args[1] )
-NumberedLine
+NumberedLines.NumberedLine
 ```
 """
 attach_line_numbers(a) = a
