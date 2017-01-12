@@ -131,7 +131,7 @@ Base.string(n::NumberedLine) = string(detach_line_numbers(n) )
 Return a copy of `n` with `f` applied to the line in `n`
 
 ```jldoctest
-julia> add_one(a) = :($\a + 1);
+julia> add_one(a) = :(\$a + 1);
 
 julia> e = quote
            1
