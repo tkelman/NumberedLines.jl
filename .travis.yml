@@ -18,4 +18,4 @@ after_success:
   # push coverage results to Codecov
   - julia -e 'cd(Pkg.dir("NumberedLines")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
   # build documentation
-  - julia -e 'cd(Pkg.dir("NumberedLines")); Pkg.add("Documenter"); include(joinpath("docs", "make.jl"))'
+  - julia -e 'cd(ENV["DOCUMENTER_DEBUG"] = "true"; Pkg.dir("NumberedLines")); Pkg.add("Documenter"); include(joinpath("docs", "make.jl"))'
