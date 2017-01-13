@@ -31,7 +31,6 @@ true
 is_line_number(a) = false
 is_line_number(e::Expr) = e.head == :line
 is_line_number(e::LineNumberNode) = true
-is_line_number(1)
 
 """
     immutable NumberedLine
@@ -41,9 +40,10 @@ A line of code with an attached line number
 ```jldoctest
 julia> using NumberedLines
 
-julia> NumberedLine( LineNumberNode(1), 2)
-:( # line 1:
-    2)
+julia> Expr(:block, NumberedLine( LineNumberNode(1), 2) )
+quote  # line 1:
+    2
+end
 ```
 """
 immutable NumberedLine
@@ -57,8 +57,6 @@ Base.show_unquoted(io::IO, n::NumberedLine, index::Int, prec::Int) = begin
     print(io, '\n', " "^index)
     Base.show_unquoted(io, n.line, index, prec)
 end
-Base.print(io::IO, ex::NumberedLine) = (Base.show_unquoted(io, ex, 0, -1); nothing)
-Base.show(io::IO, ex::NumberedLine) = Base.show_unquoted_quote_expr(io, ex, 0, -1)
 
 safe_get(vector, index) =
     if index > length(vector)
