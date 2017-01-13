@@ -4,7 +4,8 @@ makedocs(
     modules = [NumberedLines],
     format = :html,
     sitename = "NumberedLines.jl",
-    authors = "Brandon Taylor"
+    authors = "Brandon Taylor",
+    pages = Any["Home" => "index.md"]
 )
 
 deploydocs(
