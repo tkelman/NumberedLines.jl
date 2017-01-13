@@ -49,9 +49,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "index.html#Documenter.jl-1",
+    "location": "index.html#NumberedLines.jl-1",
     "page": "Home",
-    "title": "Documenter.jl",
+    "title": "NumberedLines.jl",
     "category": "section",
     "text": "A set of tools for easier manipulation of line number information. It can be difficult to reason about line number information when writing macros. However, it is essential to retain line number information to maintain coverage statistics. Using this package, line numbers can be directly attached to their corresponding lines. This prevents errors and makes argument counting more intuitive.Modules = [NumberedLines]"
 },
