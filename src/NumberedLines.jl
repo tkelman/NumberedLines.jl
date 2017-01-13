@@ -11,7 +11,7 @@ Test whether `a` is a line number.
 ```jldoctest
 julia> using NumberedLines
 
-julia> 1 |> is_line_number
+julia> is_line_number(1)
 false
 
 julia> e = quote
