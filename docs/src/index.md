@@ -1,4 +1,6 @@
-```@contents
+# Documenter.jl
+
+```@index
 ```
 
 A set of tools for easier manipulation of line number information. Line numbers
