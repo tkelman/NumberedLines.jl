@@ -38,12 +38,26 @@ is_line_number(1)
 
 A line of code with an attached line number
 
-print(NumberedLine(LineNumberNode(1), 2))
+```jldoctest
+julia> NumberedLine( LineNumberNode(1), 2)
+:( # line 1:
+    2)
+```
 """
 immutable NumberedLine
     number
     line
 end
+
+Base.is_linenumber(n::NumberedLine) = true
+Base.show_unquoted(io::IO, n::NumberedLine, index::Int, prec::Int) = begin
+    Base.show_unquoted(io, n.number, index, prec)
+    print(io, '\n', " "^index)
+    Base.show_unquoted(io, n.line, index, prec)
+end
+
+Base.print(io::IO, ex::NumberedLine) = (Base.show_unquoted(io, ex, 0, -1); nothing)
+Base.show(io::IO, ex::NumberedLine) = Base.show_unquoted_quote_expr(io, ex, 0, -1)
 
 safe_get(vector, index) =
     if index > length(vector)
@@ -133,9 +147,7 @@ julia> detach_line_numbers(1)
 1
 ```
 """
-detach_line_numbers(a) = a
 detach_line_numbers(e::Expr) = Expr(e.head, vcat(map(separate, e.args)...)...)
-detach_line_numbers(n::NumberedLine) =
 
 """
     without_line_number(f, n::NumberedLine)
