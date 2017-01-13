@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · NumberedLines.jl</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/default.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Ubuntu+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="assets/documenter.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="assets/documenter.js"></script><script src="../versions.js"></script></head><body><nav class="toc"><h1>NumberedLines.jl</h1><form class="search" action="search.html"><select id="version-selector" onChange="window.location.href=this.value"><option value="#" selected="selected" disabled="disabled">Version</option></select><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li class="current"><a class="toctext" href="index.html">Home</a><ul class="internal"></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href="index.html">Home</a></li></ul><a class="edit-page" href="https://github.com/bramtayl/NumberedLines.jl/tree/c37a1df60967d8fdfc792f4a7e20112c6446aa87/docs/src/index.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/></header><h1><a class="nav-anchor" id="NumberedLines.jl-1" href="#NumberedLines.jl-1">NumberedLines.jl</a></h1><ul><li><a href="index.html#NumberedLines.NumberedLine"><code>NumberedLines.NumberedLine</code></a></li><li><a href="index.html#NumberedLines.attach_line_numbers-Tuple{Any}"><code>NumberedLines.attach_line_numbers</code></a></li><li><a href="index.html#NumberedLines.detach_line_numbers-Tuple{Any}"><code>NumberedLines.detach_line_numbers</code></a></li><li><a href="index.html#NumberedLines.with_numbered_lines-Tuple{Any,Any}"><code>NumberedLines.with_numbered_lines</code></a></li><li><a href="index.html#NumberedLines.without_line_number-Tuple{Any,Any}"><code>NumberedLines.without_line_number</code></a></li></ul><p>A set of tools for easier manipulation of line number information. It can be difficult to reason about line number information when writing macros. However, it is essential to retain line number information to maintain coverage statistics. Using this package, line numbers can be directly attached to their corresponding lines. This prevents errors and makes argument counting more intuitive.</p><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="NumberedLines.NumberedLine" href="#NumberedLines.NumberedLine"><code>NumberedLines.NumberedLine</code></a> — <span class="docstring-category">Type</span>.</div><div><pre><code class="language-none">immutable NumberedLine</code></pre><p>A line of code with an attached line number</p><pre><code class="language-jlcon">julia&gt; using NumberedLines
+
+julia&gt; Expr(:block, NumberedLine( LineNumberNode(1), 2) )
+quote  # line 1:
+    2
+end</code></pre></div><a class="source-link" target="_blank" href="https://github.com/bramtayl/NumberedLines.jl/tree/c37a1df60967d8fdfc792f4a7e20112c6446aa87/src/NumberedLines.jl#L6-L19">source</a><br/></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="NumberedLines.attach_line_numbers-Tuple{Any}" href="#NumberedLines.attach_line_numbers-Tuple{Any}"><code>NumberedLines.attach_line_numbers</code></a> — <span class="docstring-category">Method</span>.</div><div><pre><code class="language-none">attach_line_numbers(a)</code></pre><p>Attach line numbers to lines</p><pre><code class="language-jlcon">julia&gt; using NumberedLines
+
+julia&gt; e = quote
+           1
+           begin
+               2
+           end
+       end |&gt; attach_line_numbers;
+
+julia&gt; e.args[1].line
+1
+
+julia&gt; e.args[2].line.args[1].line
+2
+
+julia&gt; e == attach_line_numbers(e)
+true
+
+julia&gt; no_line = Expr(:block, LineNumberNode(1) );
+
+julia&gt; Test.@test_throws ErrorException attach_line_numbers(no_line);</code></pre></div><a class="source-link" target="_blank" href="https://github.com/bramtayl/NumberedLines.jl/tree/c37a1df60967d8fdfc792f4a7e20112c6446aa87/src/NumberedLines.jl#L49-L77">source</a><br/></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="NumberedLines.detach_line_numbers-Tuple{Any}" href="#NumberedLines.detach_line_numbers-Tuple{Any}"><code>NumberedLines.detach_line_numbers</code></a> — <span class="docstring-category">Method</span>.</div><div><pre><code class="language-none">detach_line_numbers(a)</code></pre><p>Detach line numbers from lines</p><pre><code class="language-jlcon">julia&gt; using NumberedLines
+
+julia&gt; e = quote
+           1
+       end;
+
+julia&gt; push!(e.args, 2);
+
+julia&gt; e |&gt; attach_line_numbers |&gt; detach_line_numbers == e
+true
+
+julia&gt; detach_line_numbers(1)
+1</code></pre></div><a class="source-link" target="_blank" href="https://github.com/bramtayl/NumberedLines.jl/tree/c37a1df60967d8fdfc792f4a7e20112c6446aa87/src/NumberedLines.jl#L103-L123">source</a><br/></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="NumberedLines.with_numbered_lines-Tuple{Any,Any}" href="#NumberedLines.with_numbered_lines-Tuple{Any,Any}"><code>NumberedLines.with_numbered_lines</code></a> — <span class="docstring-category">Method</span>.</div><div><pre><code class="language-none">with_numbered_lines(f, e)</code></pre><p><a href="index.html#NumberedLines.attach_line_numbers-Tuple{Any}"><code>attach_line_numbers</code></a> to <code>e</code>, apply <code>f</code>, then <a href="index.html#NumberedLines.detach_line_numbers-Tuple{Any}"><code>detach_line_numbers</code></a></p><pre><code class="language-jlcon">julia&gt; using NumberedLines
+
+julia&gt; reverse_lines(e) = Expr(e.head, e.args[2], e.args[1]);
+
+julia&gt; e = quote
+           1
+           2
+       end;
+
+julia&gt; result = with_numbered_lines(reverse_lines, e);
+
+julia&gt; (result.args[2], result.args[4] ) == (2, 1)
+true</code></pre></div><a class="source-link" target="_blank" href="https://github.com/bramtayl/NumberedLines.jl/tree/c37a1df60967d8fdfc792f4a7e20112c6446aa87/src/NumberedLines.jl#L154-L175">source</a><br/></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="NumberedLines.without_line_number-Tuple{Any,Any}" href="#NumberedLines.without_line_number-Tuple{Any,Any}"><code>NumberedLines.without_line_number</code></a> — <span class="docstring-category">Method</span>.</div><div><pre><code class="language-none">without_line_number(f, n::NumberedLine)</code></pre><p>Return a copy of <code>n</code> with <code>f</code> applied to the line in <code>n</code></p><pre><code class="language-jlcon">julia&gt; using NumberedLines
+
+julia&gt; add_one(a) = :($a + 1);
+
+julia&gt; e = quote
+           1
+       end |&gt; attach_line_numbers;
+
+julia&gt; test_line = e.args[1];
+
+julia&gt; without_line_number(add_one, test_line) ==
+           NumberedLine(test_line.number, add_one(test_line.line) )
+true
+
+julia&gt; without_line_number(add_one, 1) == add_one(1)
+true</code></pre></div><a class="source-link" target="_blank" href="https://github.com/bramtayl/NumberedLines.jl/tree/c37a1df60967d8fdfc792f4a7e20112c6446aa87/src/NumberedLines.jl#L127-L150">source</a><br/></section><footer><hr/></footer></article></body></html>
