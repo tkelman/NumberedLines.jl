@@ -1,36 +1,7 @@
 module NumberedLines
 
-export is_line_number, NumberedLine, attach_line_numbers, detach_line_numbers,
+export NumberedLine, attach_line_numbers, detach_line_numbers,
 without_line_number, with_numbered_lines
-
-"""
-    is_line_number(a)
-
-Test whether `a` is a line number.
-
-```jldoctest
-julia> using NumberedLines
-
-julia> is_line_number(1)
-false
-
-julia> e = quote
-           1
-       end;
-
-julia> e |> is_line_number
-false
-
-julia> e.args[1] |> is_line_number
-true
-
-julia> LineNumberNode(1) |> is_line_number
-true
-```
-"""
-is_line_number(a) = false
-is_line_number(e::Expr) = e.head == :line
-is_line_number(e::LineNumberNode) = true
 
 """
     immutable NumberedLine
@@ -52,6 +23,9 @@ immutable NumberedLine
 end
 
 Base.is_linenumber(n::NumberedLine) = true
+is_line_number(n) = Base.is_linenumber(n)
+is_line_number(n::NumberedLine) = false
+
 Base.show_unquoted(io::IO, n::NumberedLine, index::Int, prec::Int) = begin
     Base.show_unquoted(io, n.number, index, prec)
     print(io, '\n', " "^index)
@@ -85,15 +59,16 @@ julia> e = quote
            begin
                2
            end
-       end;
+       end |> attach_line_numbers;
 
-julia> attached_arguments = attach_line_numbers(e).args;
+julia> e.args[1].line
+1
 
-julia> attached_arguments[1] |> typeof
-NumberedLines.NumberedLine
+julia> e.args[2].line.args[1].line
+2
 
-julia> attached_arguments[2].line.args[1] |> typeof
-NumberedLines.NumberedLine
+julia> e == attach_line_numbers(e)
+true
 
 julia> no_line = Expr(:block, LineNumberNode(1) );
 
@@ -161,9 +136,9 @@ julia> add_one(a) = :(\$a + 1);
 
 julia> e = quote
            1
-       end;
+       end |> attach_line_numbers;
 
-julia> test_line = attach_line_numbers(e).args[1];
+julia> test_line = e.args[1];
 
 julia> without_line_number(add_one, test_line) ==
            NumberedLine(test_line.number, add_one(test_line.line) )
